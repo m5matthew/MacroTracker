@@ -1,3 +1,5 @@
+/* These tables are created in the "macro_tracker" database */
+
 DROP TABLE IF EXISTS entries;
 DROP TABLE IF EXISTS meals;
 
