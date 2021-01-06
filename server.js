@@ -1,28 +1,23 @@
 const express = require("express");
+const body_parser = require("body-parser");
 const app = express();
 const port = 3000;
 
-// set up pool of database connections
-const { Pool } = require("pg");
-const config = require("./db/config.json");
-const pool = new Pool({
-  host: config.host,
-  user: config.user,
-  password: config.password,
-  database: config.database,
-  port: config.port,
+// parse application/json
+app.use(body_parser.json());
+
+// Routes
+const meals = require("./routes/meals");
+
+app.get("/", (_req, res) => {
+  res.sendFile("frontend/build/index.html", { root: __dirname });
 });
 
-app.get("/", (req, res) => {
-  res.send("Welcome to macro tracker");
-});
+app.use("/meals", meals);
+// app.use("/entries", entries);
 
-app.post("/add_meal", (req, res) => {
-  pool.query("SELECT * FROM meals", (err, res) => {
-    console.log(err, res);
-  }); //
-  res.send("Success");
-});
+// Redirect webapp traffic to frontend build folder (for css, js, etc.)
+app.use(express.static("frontend/build"));
 
 app.listen(port, () => {
   console.log(`Macrotracker app listening at http://localhost:${port}`);
