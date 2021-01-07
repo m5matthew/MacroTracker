@@ -2,13 +2,6 @@ import React, { useState } from "react";
 import ErrorMessage from "./ErrorMessage";
 import "./AddMeal.css";
 
-/* Should look like a table */
-/*
-name protein fat carbs 
-DinoNuggies 5 10 15
-
-Look at form grid for layout
-*/
 function AddMeal() {
   const [name, setName] = useState("");
   const [protein, setProtein] = useState(0);
@@ -20,6 +13,9 @@ function AddMeal() {
   const [validProtein, setValidProtein] = useState(true);
   const [validFat, setValidFat] = useState(true);
   const [validCarbs, setValidCarbs] = useState(true);
+  const [validSubmit, setValidSubmit] = useState(true);
+
+  const [submitInProgress, setSubmitInProgress] = useState(false);
 
   const resetState = (_) => {
     setName("");
@@ -33,8 +29,10 @@ function AddMeal() {
   };
 
   const handleSubmit = (e) => {
+    setSubmitInProgress(true);
     e.preventDefault();
 
+    setValidSubmit(true);
     setValidName(name.trim() !== "");
     setValidProtein(!isNaN(protein));
     setValidFat(!isNaN(fat));
@@ -46,12 +44,37 @@ function AddMeal() {
       console.log(
         `Adding meal ${name} with ${protein} protein, ${fat} fat, and ${carbs} carbs.`
       );
-      resetState();
+      fetch("/meals/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          protein,
+          fat,
+          carbs,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+        })
+        .then(resetState)
+        .catch((error) => {
+          console.log(error);
+          setValidSubmit(false);
+        })
+        .finally(() => setSubmitInProgress(false));
     }
   };
 
   return (
     <div style={{ textAlign: "left" }}>
+      {!validSubmit && (
+        <ErrorMessage msg="Error submitting meal to database. Please ensure meal names are unique." />
+      )}
       {!validName && <ErrorMessage msg="Meal name cannot be empty." />}
       {!validProtein && <ErrorMessage msg="Protein must be a valid number." />}
       {!validFat && <ErrorMessage msg="Fat must be a valid number." />}
@@ -109,9 +132,15 @@ function AddMeal() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Add Meal
-        </button>
+        {submitInProgress ? (
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only"> Loading... </span>
+          </div>
+        ) : (
+          <button type="submit" className="btn btn-primary">
+            Add Meal
+          </button>
+        )}
       </form>
     </div>
   );
