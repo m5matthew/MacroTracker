@@ -1,19 +1,30 @@
-import './App.css';
+import "./App.css";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+import AddEntry from "./AddEntry";
 import AddMeal from "./AddMeal";
+import Navbar from "./Navbar";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Welcome, Matthew</h1>
-      <button>Add meal</button>
-      <button>Add entry</button>
-
-      {/* Change this in the future */}
-      <div style={{width: '50%', margin: 'auto'}}>
-        <AddMeal/>
+    <Router>
+      <div className="App">
+        <Navbar />
+        <Switch>
+          <Route path="/meals">
+            <div style={{ width: "50%", margin: "auto" }}>
+              <AddMeal />
+            </div>
+          </Route>
+          <Route path="/entries">
+            <div style={{ width: "50%", margin: "auto" }}>
+              <AddEntry />
+            </div>
+          </Route>
+          <Route path="/">Welcome,Matthew</Route>
+        </Switch>
       </div>
-    </div>
+    </Router>
   );
 }
 

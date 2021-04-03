@@ -30,6 +30,8 @@ function AddMeal() {
 
   const handleSubmit = (e) => {
     setSubmitInProgress(true);
+    // prevent HTML form default behavior
+    // https://stackoverflow.com/questions/3350247/how-to-prevent-form-from-being-submitted
     e.preventDefault();
 
     setValidSubmit(true);
