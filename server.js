@@ -8,13 +8,14 @@ app.use(body_parser.json());
 
 // Routes
 const meals = require("./routes/meals");
+const entries = require("./routes/entries");
 
 app.get("/", (_req, res) => {
   res.sendFile("frontend/build/index.html", { root: __dirname });
 });
 
 app.use("/meals", meals);
-// app.use("/entries", entries);
+app.use("/entries", entries);
 
 // Redirect webapp traffic to frontend build folder (for css, js, etc.)
 app.use(express.static("frontend/build"));

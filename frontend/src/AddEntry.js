@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ErrorMessage from "./ErrorMessage";
 import "./AddMeal.css";
-/*
-TODO: 
-- Call Meals API to display all meals
-- Currently timestamps are displayed as numbers
-- Test entries API
-*/
 
 function AddEntry() {
   const [date, setDate] = useState(Date.now());
   const [mealID, setMealID] = useState("");
+  const [allMeals, setAllMeals] = useState([]);
 
   const [validSubmit, setValidSubmit] = useState(true);
   const [submitInProgress, setSubmitInProgress] = useState(false);
+
+  // effectively same thing as componentDidMount()
+  useEffect(() => {
+    fetch("/meals/get")
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.length > 0) {
+          setMealID(data[0].id);
+        }
+        setAllMeals(data);
+      });
+  }, []);
 
   const resetState = (_) => {
     setMealID("");
@@ -31,7 +38,7 @@ function AddEntry() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        date,
+        date: Math.round(date / 1000), // Date.now() returns milliseconds so we convert to seconds
         meal_id: mealID,
       }),
     })
@@ -60,18 +67,21 @@ function AddEntry() {
             type="text"
             className="form-control"
             id="date"
-            value={date}
+            value={new Date(date)}
             onChange={(e) => setDate(e.target.value)}
           />
         </div>
 
         <div className="form-group">
           <label for="meals">Choose a meal:</label>
-          <select id="meals" name="meals">
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="fiat">Fiat</option>
-            <option value="audi">Audi</option>
+          <select
+            id="meals"
+            name="meals"
+            onChange={(e) => setMealID(e.target.value)}
+          >
+            {allMeals.map((meal) => (
+              <option value={meal.id}>{meal.name}</option>
+            ))}
           </select>
         </div>
 

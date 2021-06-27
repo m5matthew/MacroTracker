@@ -6,7 +6,7 @@ router.post("/add", async function (req, res, next) {
   console.log("Adding entry", [req.body.date, req.body.meal_id]);
   pool.query(
     `INSERT INTO entries (date, meal_id) 
-    VALUES ($1, $2)`,
+    VALUES (to_timestamp($1), $2)`,
     [req.body.date, req.body.meal_id],
     (err, _) => {
       if (err) {
