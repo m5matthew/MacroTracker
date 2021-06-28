@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import ErrorMessage from "./ErrorMessage";
 import "./AddMeal.css";
 
+// TODO: Add quantity to entry (ie. 2 eggs vs just 1 egg everytime)
+// TODO: Add breakfast/lunch/dinner ?
+
 function AddEntry() {
   const [date, setDate] = useState(Date.now());
   const [mealID, setMealID] = useState("");

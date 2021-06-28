@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import AddEntry from "./AddEntry";
 import AddMeal from "./AddMeal";
 import Navbar from "./Navbar";
+import Home from "./Home";
 
 function App() {
   return (
@@ -21,7 +22,11 @@ function App() {
               <AddEntry />
             </div>
           </Route>
-          <Route path="/">Welcome,Matthew</Route>
+          <Route path="/">
+            <div style={{ width: "50%", margin: "auto" }}>
+              <Home />
+            </div>
+          </Route>
         </Switch>
       </div>
     </Router>

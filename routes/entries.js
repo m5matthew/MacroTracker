@@ -47,4 +47,25 @@ router.get("/get", function (req, res, next) {
   });
 });
 
+// req.body.timestamp should be in seconds since epoch
+router.get("/get_by_date", function (req, res, next) {
+  console.log("Getting all entries on this date", req.query.timestamp);
+
+  pool.query(
+    `SELECT * 
+    FROM entries 
+    NATURAL JOIN meals
+    WHERE entries.date::date = to_timestamp($1)::date`,
+    [req.query.timestamp], 
+    (err, query_result) => {
+      if (err) {
+        next(err);
+      } else {
+        console.log(query_result.rows);
+        res.send(query_result.rows);
+      }
+    }
+  );
+});
+
 module.exports = router;
