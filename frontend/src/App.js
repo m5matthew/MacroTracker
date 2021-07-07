@@ -23,9 +23,7 @@ function App() {
             </div>
           </Route>
           <Route path="/">
-            <div style={{ width: "50%", margin: "auto" }}>
-              <Home />
-            </div>
+            <Home />
           </Route>
         </Switch>
       </div>
