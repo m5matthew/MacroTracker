@@ -1,4 +1,4 @@
 cd frontend
 npm run-script build
 cd ..
-node server.js
+pm2 restart server.js
