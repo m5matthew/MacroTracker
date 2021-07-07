@@ -8,6 +8,7 @@ import "./AddMeal.css";
 function AddEntry() {
   const [date, setDate] = useState(Date.now());
   const [mealID, setMealID] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [allMeals, setAllMeals] = useState([]);
 
   const [validSubmit, setValidSubmit] = useState(true);
@@ -43,6 +44,7 @@ function AddEntry() {
       body: JSON.stringify({
         date: Math.round(date / 1000), // Date.now() returns milliseconds so we convert to seconds
         meal_id: mealID,
+        quantity,
       }),
     })
       .then((response) => {
@@ -72,6 +74,17 @@ function AddEntry() {
             id="date"
             value={new Date(date)}
             onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="quantity">Quantity</label>
+          <input
+            type="text"
+            className="form-control"
+            id="quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
           />
         </div>
 

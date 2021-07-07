@@ -3,11 +3,15 @@ var pool = require("../db/pool.js");
 var router = express.Router();
 
 router.post("/add", async function (req, res, next) {
-  console.log("Adding entry", [req.body.date, req.body.meal_id]);
+  console.log("Adding entry", [
+    req.body.date,
+    req.body.meal_id,
+    req.body.quantity,
+  ]);
   pool.query(
-    `INSERT INTO entries (date, meal_id) 
-    VALUES (to_timestamp($1), $2)`,
-    [req.body.date, req.body.meal_id],
+    `INSERT INTO entries (date, meal_id, quantity) 
+    VALUES (to_timestamp($1), $2, $3)`,
+    [req.body.date, req.body.meal_id, req.body.quantity],
     (err, _) => {
       if (err) {
         next(err);
@@ -56,7 +60,7 @@ router.get("/get_by_date", function (req, res, next) {
     FROM entries 
     NATURAL JOIN meals
     WHERE entries.date::date = to_timestamp($1)::date`,
-    [req.query.timestamp], 
+    [req.query.timestamp],
     (err, query_result) => {
       if (err) {
         next(err);

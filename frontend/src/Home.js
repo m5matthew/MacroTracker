@@ -13,7 +13,23 @@ function Home() {
       .then((resp) => resp.json())
       .then((data) => {
         console.log("Got meals", data);
-        setMeals(data);
+
+        // multiply macros by the quantity of the meal
+        const dataRecalculatedWithQuantity = [];
+        for (let i = 0; i < data.length; i++) {
+          let { meal_id, quantity, id, name, protein, fat, carbs } = data[i];
+          let calculatedMeal = {
+            meal_id,
+            id,
+            name: name + "(" + quantity + ")",
+            carbs: parseFloat(carbs) * parseFloat(quantity),
+            protein: parseFloat(protein) * parseFloat(quantity),
+            fat: parseFloat(fat) * parseFloat(quantity),
+          };
+          dataRecalculatedWithQuantity.push(calculatedMeal);
+        }
+
+        setMeals(dataRecalculatedWithQuantity);
       });
   }, []);
 
@@ -25,10 +41,10 @@ function Home() {
     }
     const total = array.reduce((acc, o) => {
       return {
-        [key]: (parseFloat(acc[key]) + parseFloat(o[key])).toString(),
+        [key]: acc[key] + o[key],
       };
     })[key];
-    return parseFloat(total);
+    return total;
   };
 
   // Documentation: https://react-google-charts.com/pie-chart
