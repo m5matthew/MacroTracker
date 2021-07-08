@@ -22,21 +22,23 @@ router.post("/add", async function (req, res, next) {
   );
 });
 
-router.delete("/remove", function (req, res, next) {
+router.post("/remove", function (req, res, next) {
   // TODO: Need to figure out what happens with duplicate entries
   //       Can possible do a subquery.
-  res.send("Removing entry", req.body.id);
-  //   pool.query(
-  //     `DELETE FROM entries WHERE date = $1 AND meal_id = $2`,
-  //     [req.body.date, req.body.meal_id],
-  //     (err, _) => {
-  //       if (err) {
-  //         next(err);
-  //       } else {
-  //         res.sendStatus(200);
-  //       }
-  //     }
-  //   );
+
+  // solution assumes that each entry has a unique date for simplicity
+  console.log("Removing entry", req.body);
+  pool.query(
+    `DELETE FROM entries WHERE date = to_timestamp($1, 'YYYY-MM-DD HH24:MI:SS')`,
+    [req.body.date],
+    (err, _) => {
+      if (err) {
+        next(err);
+      } else {
+        res.sendStatus(200);
+      }
+    }
+  );
 });
 
 router.get("/get", function (req, res, next) {

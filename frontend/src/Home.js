@@ -8,6 +8,9 @@ import "./Home.css";
 function Home() {
   const [meals, setMeals] = useState([]);
 
+  // need toggleRenderer to trigger useEffect when we delete a meal
+  const [toggleRerender, setToggleRerender] = useState(false);
+
   useEffect(() => {
     fetch(`/entries/get_by_date?timestamp=${Math.round(Date.now() / 1000)}`)
       .then((resp) => resp.json())
@@ -17,10 +20,12 @@ function Home() {
         // multiply macros by the quantity of the meal
         const dataRecalculatedWithQuantity = [];
         for (let i = 0; i < data.length; i++) {
-          let { meal_id, quantity, id, name, protein, fat, carbs } = data[i];
+          let { meal_id, quantity, id, name, protein, fat, carbs, date } =
+            data[i];
           let calculatedMeal = {
             meal_id,
             id,
+            date,
             name: name + "(" + quantity + ")",
             carbs: parseFloat(carbs) * parseFloat(quantity),
             protein: parseFloat(protein) * parseFloat(quantity),
@@ -31,7 +36,7 @@ function Home() {
 
         setMeals(dataRecalculatedWithQuantity);
       });
-  }, []);
+  }, [toggleRerender]);
 
   // Sums up across one key for a list of objects
   // Ex. reducebyObject({a: '2', a:'3'}, 'a') = 5
@@ -125,7 +130,10 @@ function Home() {
           }}
         />
       </div>
-      <MealsTable data={meals} />
+      <MealsTable
+        data={meals}
+        onDelete={() => setToggleRerender(!toggleRerender)}
+      />
     </div>
   );
 }
